@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "oneapp",
+    "name": "One App",
     "slug": "oneapp",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -23,7 +23,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.oneapp.com"
     },
     "web": {
       "bundler": "metro",
