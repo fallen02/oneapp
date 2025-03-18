@@ -1,62 +1,85 @@
 import * as React from "react";
-import { View } from "react-native";
-import Animated, {
-  FadeInUp,
-  FadeOutDown,
-  LayoutAnimationConfig,
-} from "react-native-reanimated";
-import { Info } from "~/lib/icons/Info";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { View, RefreshControl, Image } from "react-native";
 import { Button } from "~/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
-import { Progress } from "~/components/ui/progress";
 import { Text } from "~/components/ui/text";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "~/components/ui/tooltip";
-import { useLoadingStore} from "~/store/loading";
 import { cookieStore } from "~/store/cookie";
 import { useEffect } from "react";
-import { bypassUrl, checkCookie } from "~/providers/nfm/handlers";
-import useNFM from "~/providers/nfm/useNFM";
-import { getMainPageData } from "~/providers/nfm/handlers";
+import { useNFM } from "~/providers/nfm/useNFM";
+import { MotiView } from "moti";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { FlatList } from "react-native";
+import { HomeRowComponents } from "~/components/HomeRowComponent";
+import { Home } from "~/lib/icons/Home";
 
-const GITHUB_AVATAR_URI =
-  "https://i.pinimg.com/originals/ef/a2/8d/efa28d18a04e7fa40ed49eeb0ab660db.jpg";
+
+// import { checkAndReplaceCookie } from "~/helper/nfm";
 
 export default function Screen() {
-  const { cookie, checkAndReplaceCookie, setCookie, cookieLoading } = cookieStore()
-  const { loading } = useLoadingStore()
-  const { data: mainPageData, dataLoading } = useNFM()
+  const { cookie, refreshCookie, cookieLoading, setCookie } = cookieStore();
+  const { data: mainPageData, dataLoading, refetch } = useNFM();
+    
+  
+
+  const [refresing, setRefresing] = React.useState<boolean>(false);
   useEffect(() => {
-    if (!cookie) {
-      setCookie()
-    }
-    checkAndReplaceCookie(cookie);
+    setCookie();
   }, [cookie]);
-const handleClick = () => {
-  console.log(mainPageData);
-}
+
+  const handleRefresh = async () => {
+    setRefresing(true);
+    await refetch();
+    setRefresing(false);
+  };
+
   return (
-    <View className="flex-1 flex-col justify-center items-center gap-5 p-6 bg-secondary/30">
-      <Text className="text-2xl font-bold">
-      {
-       cookieLoading ? "Loading..." : "Welcome back!"
-      }
-      </Text>
-      <Button variant={'destructive'} onPress = {handleClick}>
-        <Text>{ dataLoading ? "Loading..." : "Click me!" }</Text>
-      </Button>
-      
-    </View>
+    <SafeAreaView>
+      <MotiView className="p-5">
+        <FlatList
+          data={mainPageData}
+          keyExtractor={({ heading }) => heading}
+          renderItem={({ item }) => (
+            <HomeRowComponents heading={item.heading} data={item.data} />
+          )}
+          ListHeaderComponent={() => (
+            <View>
+              <View className="flex flex-row justify-between items-center">
+                <View>
+                  <Text>Two</Text>
+                </View>
+                <View className="flex flex-row gap-5">
+                  {/* <Svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    
+                  >
+                    <Path
+                      d="M11.5 2C16.75 2 21 6.25 21 11.5C21 16.75 16.75 21 11.5 21C6.25 21 2 16.75 2 11.5C2 7.8 4.11 4.6 7.2 3.03"
+                      stroke="#292D32"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <Path
+                      d="M22 22L20 20"
+                      stroke="#292D32"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </Svg> */}
+                  <Home className="text-foreground" />
+                </View>
+              </View>
+            </View>
+          )}
+          ListEmptyComponent={() => <Text>Empty</Text>}
+          refreshControl={
+            <RefreshControl refreshing={refresing} onRefresh={handleRefresh} />
+          }
+        />
+      </MotiView>
+    </SafeAreaView>
   );
 }

@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { cookieStore, cookieType } from "~/store/cookie";
 import { fianalMainPageContentTyps, getMainPageData } from "./handlers";
 
-const useNFM = () => {
+export const useNFM = () => {
   const [data, setData] = useState<fianalMainPageContentTyps[]>([]);
   const [dataLoading, setDataLoading] = useState(false);
-  const { cookie } = cookieStore();
+  const { cookie,  } = cookieStore();
+  // if(!cookie) setCookie()
   const fetchData = async () => {
-    
     try {
       setDataLoading(true);
       if (cookie) {
@@ -20,9 +20,13 @@ const useNFM = () => {
       console.error(error); 
     } finally {
       setDataLoading(false);
+      
+      console.log("Data fetched successfully");
+      
     }
   }
   useEffect(() => {
+    console.log('ha')
     fetchData();
   }, [])
 
@@ -30,5 +34,3 @@ const useNFM = () => {
 
   return { data, dataLoading, refetch };
 }
-
-export default useNFM
