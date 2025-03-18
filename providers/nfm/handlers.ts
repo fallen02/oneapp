@@ -239,13 +239,6 @@ export const getPartialDetails = async ({
       `${mainUrl}/post.php?id=${id}&t=${Math.floor(Date.now() / 1000)}`,
       options
     ).then((res) => res.json());
-    // console.log(response)
-    // Check if response has the expected properties
-    // if (!response || !response.title) {
-    //   console.error("Invalid response data:", response);
-    //   return null;
-    // }
-
     return {
       title: response.title,
       year: response.year,
