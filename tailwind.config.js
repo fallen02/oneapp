@@ -59,6 +59,15 @@ module.exports = {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
+      fontFamily: {
+        opensansBold: ["OpenSans-Bold", "sans-serif"],
+        opensansMid: ["OpenSans-Medium", "sans-serif"],
+        opensansReg: ["OpenSans-Regular", "sans-serif"],
+        archivoReg: ["Archivo-Regular", "sans-serif"],
+        archivoBold: ["Archivo-Bold", "sans-serif"],
+        archivoMid: ["Archivo-Medium", "sans-serif"],
+        archivoSemBold: ["Archivo-SemiBold", "sans-serif"],
+      }
     },
   },
   plugins: [require('tailwindcss-animate')],

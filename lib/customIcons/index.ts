@@ -23,4 +23,6 @@ export { default as Setting } from './setting';
 export { default as Squares } from './squares';
 export { default as Subtitle } from './subtitle';
 export { default as Unlock } from './unlock';
+export { default as Logo } from './Logo';
+export { default as NotificationBing } from './notification-bing';
 
