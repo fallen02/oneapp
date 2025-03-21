@@ -287,3 +287,30 @@ export const getPartialDetails = async ({
     return null; // Return null to indicate an error occurred
   }
 };
+
+export const getFullDetails = async({
+  id,
+  cookie,
+}: {
+  id: string;
+  cookie: cookieType | 'no need!'
+}) => {
+  try {
+    const options = {
+      method: "GET",
+      headers: {
+        cookie: cookie === 'no need!'? '' : `t_hash_t=${cookie.t_hash_t};t_hash=${cookie.t_hash}`,
+        Referer: `${mainUrl}/`,
+      },
+    };
+
+    const response = await fetch(
+      `${mainUrl}/post.php?id=${id}&t=${Math.floor(Date.now() / 1000)}`,
+      options
+    ).then((res) => res.json());
+    return response
+  } catch (error) {
+    console.error("Error fetching details:", error);
+    return null; // Return null to indicate an error occurred
+  }
+}

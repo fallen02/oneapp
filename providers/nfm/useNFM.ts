@@ -3,7 +3,8 @@ import { cookieStore, cookieType } from "~/store/cookie";
 import { fianalMainPageContentTyps, getMainPageData } from "./handlers";
 
 export const useNFM = () => {
-  const [data, setData] = useState<fianalMainPageContentTyps[]>([]);
+  const [data, setData] = useState<fianalMainPageContentTyps[]>([])
+  // const [sliderdata, setData] = useState<fianalMainPageContentTyps[]>([])
   const [dataLoading, setDataLoading] = useState(false);
   const { cookie,  } = cookieStore();
   // if(!cookie) setCookie()
@@ -28,7 +29,7 @@ export const useNFM = () => {
   useEffect(() => {
     console.log('ha')
     fetchData();
-  }, [])
+  }, [cookie])
 
   const refetch = () => fetchData();
 

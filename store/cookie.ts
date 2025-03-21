@@ -20,12 +20,16 @@ interface cookieStore {
 
 
 export const cookieStore = create<cookieStore>() (
+  
   persist((set) =>({
     cookie: null,
     cookieLoading: false,
     setCookie: async () => {
+    // const {refetch } = useNFM();
+
       const newCookie = await bypassUrl()
       set({ cookie: newCookie })
+      // await refetch()
     },
     refreshCookie: async (cookie: cookieType | null | 'no need!' ) => {
       if(cookie === 'no need!' || !cookie || Math.floor((new Date(cookie.expires).getTime() - new Date().getTime())/(1000 * 60 * 60)) < 1){
