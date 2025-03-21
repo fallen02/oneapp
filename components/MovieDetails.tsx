@@ -4,6 +4,7 @@ import { ShowDetailsType } from "~/lib/types";
 import { Link, useRouter } from "expo-router";
 import { Search } from "~/lib/icons/Search";
 import { ArrowLeft } from "~/lib/icons/ArrowLeft";
+import { PlayCircle } from "~/lib/icons/PlayCircle";
 
 export const MovieDetails = ({
   data,
@@ -12,7 +13,7 @@ export const MovieDetails = ({
   data: ShowDetailsType;
   id: string;
 }) => {
-  const router = useRouter()
+  const router = useRouter();
   return (
     <View className="relative w-full h-full flex flex-col gap-3 p-2 z-0">
       <View className="absolute top-[10px] px-5 w-full flex flex-row justify-between items-center pb-5 z-10">
@@ -45,11 +46,15 @@ export const MovieDetails = ({
               {data.ua}
             </Text>
           </View>
-          <Button className="rounded-2xl" variant={"destructive"}>
-            <Text className="text-xl text-white font-opensansBold">
+          {/* <Button className="rounded flex flex-row gap-1 p-2" variant={"destructive"} onPress={() => console.log(data.episodes)}>
+            
+          </Button> */}
+          <TouchableOpacity onPress={() => router.push(`/player/${id}`)} className="flex flex-row gap-2 items-center bg-red-600 px-2 py-1.5 rounded-xl">
+            <PlayCircle className="text-white" />
+            <Text className="text-lg text-white font-opensansBold">
               Watch Now
             </Text>
-          </Button>
+          </TouchableOpacity>
         </View>
         <Text className="text-foreground text-xl font-opensansBold">
           Synopsis
@@ -70,17 +75,19 @@ export const MovieDetails = ({
         <FlatList
           data={data.suggest}
           renderItem={({ item }) => (
-            <Link href={`/movie/${item.id}`} className="w-fit mx-2" asChild>
-              <TouchableOpacity className="relative w-[166px] m-4 rounded-lg overflow-hidden bg-gray-800">
-                <Image
-                  source={{
-                    uri: `https://imgcdn.media/poster/v/${item.id}.jpg`,
-                  }}
-                  className="w-full h-[233px] rounded-t-lg"
-                  resizeMode="cover"
-                />
-              </TouchableOpacity>
-            </Link>
+            // <Link href={`/movie/${item.id}`} className="w-fit mx-2" asChild>
+            <TouchableOpacity
+              onPress={() => router.push(`/details/${item.id}`)}
+              className="relative w-[166px] m-4 rounded-lg overflow-hidden bg-gray-800"
+            >
+              <Image
+                source={{
+                  uri: `https://imgcdn.media/poster/v/${item.id}.jpg`,
+                }}
+                className="w-full h-[233px] rounded-t-lg"
+                resizeMode="cover"
+              />
+            </TouchableOpacity>
           )}
           keyExtractor={(item) => item.id}
           horizontal

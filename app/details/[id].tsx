@@ -3,10 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MotiView } from "moti";
-import { useNFMFetchDetails } from "~/providers/nfm/useFetchDetails";
 import { getFullDetails } from "~/providers/nfm/handlers";
 import { cookieStore } from "~/store/cookie";
-import { Button } from "~/components/ui/button";
 import { SkeletonDetails } from "~/components/SkeletonDetails";
 import { MovieDetails } from "~/components/MovieDetails";
 import { ShowDetailsType } from "~/lib/types";
@@ -34,7 +32,7 @@ export default function MovieScreen() {
   };
   useEffect(() => {
     getDetails();
-  }, [data]);
+  }, [id]);
 
   return (
     <SafeAreaView className="w-fullh-full">

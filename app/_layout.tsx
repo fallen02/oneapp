@@ -80,7 +80,8 @@ export default function RootLayout() {
       <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="movie/[id]" options={{ headerShown: false }} />
+        <Stack.Screen name="details/[id]" options={{ headerShown: false }} />
+        <Stack.Screen name="player/[id]" options={{ headerShown: false }} />
       </Stack>
       <PortalHost />
     </ThemeProvider>

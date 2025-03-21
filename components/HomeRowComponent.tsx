@@ -1,4 +1,3 @@
-import { finalMainPageContentDataTypes } from "~/providers/nfm/handlers";
 import { Text } from "./ui/text";
 import {
   View,
@@ -8,6 +7,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Link } from "expo-router";
+import { finalMainPageContentDataTypes } from "~/lib/types";
 
 export const HomeRowComponents = ({
   heading,
@@ -22,7 +22,7 @@ export const HomeRowComponents = ({
       <FlatList
         data={data}
         renderItem={({ item }) => (
-          <Link href={`/movie/${item.id}`} className="w-fit mx-2" asChild>
+          <Link href={`/details/${item.id}`} className="w-fit mx-2" asChild>
             <TouchableOpacity className="relative w-[166px] m-4 rounded-lg overflow-hidden bg-gray-800">
               <Image source={{ uri: item.poster }} className="w-full h-[233px] rounded-t-lg"  resizeMode="cover"/>
               <Text className="absolute top-[5px] right-[5px] font-opensansReg font-semibold bg-slate-700/50 px-1.5 py-1 rounded-full">{item.ua}</Text>

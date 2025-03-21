@@ -1,7 +1,7 @@
-import axios from "axios";
 
 // @ts-ignore
 import * as cheerio from "react-native-cheerio";
+import { finalMainPageContentDataTypes, showTypes } from "~/lib/types";
 import { cookieType } from "~/store/cookie";
 const UserAgent =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36";
@@ -10,59 +10,32 @@ const verifyUrl =
   "https://raw.githubusercontent.com/SaurabhKaperwan/Utils/refs/heads/main/NF.json";
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-interface PageDataType {
-  id: string | undefined;
-  poster: string | undefined;
-}
-interface showTypes {
-  heading: string | undefined;
-  data: PageDataType[];
-}
-interface PartialcontentDetails {
-  title: string;
-  year: string;
-  ua: string;
-  duration: string;
-  quality: string;
-  type: string;
-}
 
-export interface finalMainPageContentDataTypes {
-  id: string;
-  title: string;
-  poster: string;
-  year: string;
-  ua: string;
-  duration: string;
-  quality: string;
-  type: string;
-}
 export interface fianalMainPageContentTyps {
   heading: string;
   data: finalMainPageContentDataTypes[];
 }
 
-export const checkCookie = async () =>{
+export const checkCookie = async () => {
   const options = {
     method: "GET",
     headers: {
       "User-Agent": UserAgent,
       credentials: "omit",
-      'Cookie': ''
+      Cookie: "",
     },
   };
   // console.log('setting cookie')
-  const response = await fetch(`${mainUrl}/home`, options)
-    .then((res) =>
+  const response = await fetch(`${mainUrl}/home`, options).then((res) =>
     res.text()
   );
-   // console.log(response)
-  const $document = cheerio.load(response)
+  // console.log(response)
+  const $document = cheerio.load(response);
 
-  let dataHash = $document("body").attr("data-hash")
-  
-  return dataHash ? true : false
-}
+  let dataHash = $document("body").attr("data-hash");
+
+  return dataHash ? true : false;
+};
 export const bypassUrl = async () => {
   try {
     const options = {
@@ -70,29 +43,27 @@ export const bypassUrl = async () => {
       headers: {
         "User-Agent": UserAgent,
         credentials: "omit",
-        'Cookie': ''
+        Cookie: "",
       },
     };
     // console.log('setting cookie')
-    const response = await fetch(`${mainUrl}/home`, options)
-      .then((res) =>
+    const response = await fetch(`${mainUrl}/home`, options).then((res) =>
       res.text()
     );
-     // console.log(response)
+    // console.log(response)
     const $document = cheerio.load(response);
 
-    let dataHash = $document("body").attr("data-hash")
-    if(dataHash){
-      return 'no need!'
+    let dataHash = $document("body").attr("data-hash");
+    if (dataHash) {
+      return "no need!";
     }
-      
 
     const addHash = $document("body").attr("data-addhash");
     const addTime = $document("body").attr("data-time");
 
     const verifyRes = await fetch(verifyUrl, options).then((res) => res.json());
     const verifyURL = verifyRes.url.replace("###", addHash);
-   
+
     const verifyResponse = await fetch(`${verifyURL}&t=${addTime}`, options);
     if (verifyResponse.status != 200 || !addHash || !addTime) {
       await bypassUrl();
@@ -111,11 +82,11 @@ export const bypassUrl = async () => {
       body: form,
     };
     let unformattedcookies: string | null = null;
-    
+
     do {
       await delay(35000);
-      console.log('delayed')
-      
+      console.log("delayed");
+
       const finalRes = await fetch(`${mainUrl}/verify2.php`, config);
       // console.log(finalRes.headers.get("set-cookie"))
       if (finalRes.headers.get("set-cookie")) {
@@ -123,13 +94,13 @@ export const bypassUrl = async () => {
         success = true;
       }
     } while (!success);
-    console.log(unformattedcookies)
+    console.log(unformattedcookies);
     if (!unformattedcookies) return null;
     console.log({
       t_hash_t: unformattedcookies?.split(";")[0].split("=")[1],
       t_hash: addHash,
       expires: unformattedcookies?.split(";")[1].split("=")[1],
-    })
+    });
     return {
       t_hash_t: unformattedcookies?.split(";")[0].split("=")[1],
       t_hash: addHash,
@@ -140,13 +111,16 @@ export const bypassUrl = async () => {
   }
 };
 
-export const getMainPageData = async (cookie: cookieType | 'no need!') => {
+export const getMainPageData = async (cookie: cookieType | "no need!") => {
   try {
     const options = {
       method: "GET",
       headers: {
         "User-Agent": UserAgent,
-        cookie: cookie === 'no need!'? '': '`t_hash_t=${cookie.t_hash_t};t_hash=${cookie.t_hash};expires=${cookie.expires}`',
+        cookie:
+          cookie === "no need!"
+            ? ""
+            : "`t_hash_t=${cookie.t_hash_t};t_hash=${cookie.t_hash};expires=${cookie.expires}`",
       },
     };
     const mainPageDoc = await fetch(`${mainUrl}/home`, options).then((res) =>
@@ -208,7 +182,10 @@ export const getMainPageData = async (cookie: cookieType | 'no need!') => {
   }
 };
 
-const getFianlResult = async (allShows: showTypes[], cookie: cookieType | 'no need!') => {
+const getFianlResult = async (
+  allShows: showTypes[],
+  cookie: cookieType | "no need!"
+) => {
   const finalResult: fianalMainPageContentTyps[] = [];
 
   const rows = await Promise.all(
@@ -225,7 +202,7 @@ const getFianlResult = async (allShows: showTypes[], cookie: cookieType | 'no ne
           if (child.id === undefined) return null; // Skip if id is undefined
           const partialData = await getPartialDetails({
             id: child.id,
-            cookie: cookie === 'no need!' ? 'no need!' : cookie,
+            cookie: cookie === "no need!" ? "no need!" : cookie,
           });
           return {
             id: child.id || "",
@@ -259,13 +236,16 @@ export const getPartialDetails = async ({
   cookie,
 }: {
   id: string;
-  cookie: cookieType | 'no need!';
+  cookie: cookieType | "no need!";
 }) => {
   try {
     const options = {
       method: "GET",
       headers: {
-        cookie: cookie === 'no need!'? '' : `t_hash_t=${cookie.t_hash_t};t_hash=${cookie.t_hash}`,
+        cookie:
+          cookie === "no need!"
+            ? ""
+            : `t_hash_t=${cookie.t_hash_t};t_hash=${cookie.t_hash}`,
         Referer: `${mainUrl}/`,
       },
     };
@@ -288,18 +268,21 @@ export const getPartialDetails = async ({
   }
 };
 
-export const getFullDetails = async({
+export const getFullDetails = async ({
   id,
   cookie,
 }: {
   id: string;
-  cookie: cookieType | 'no need!'
+  cookie: cookieType | "no need!";
 }) => {
   try {
     const options = {
       method: "GET",
       headers: {
-        cookie: cookie === 'no need!'? '' : `t_hash_t=${cookie.t_hash_t};t_hash=${cookie.t_hash}`,
+        cookie:
+          cookie === "no need!"
+            ? ""
+            : `t_hash_t=${cookie.t_hash_t};t_hash=${cookie.t_hash}`,
         Referer: `${mainUrl}/`,
       },
     };
@@ -308,9 +291,47 @@ export const getFullDetails = async({
       `${mainUrl}/post.php?id=${id}&t=${Math.floor(Date.now() / 1000)}`,
       options
     ).then((res) => res.json());
-    return response
+    return response;
   } catch (error) {
     console.error("Error fetching details:", error);
     return null; // Return null to indicate an error occurred
   }
+};
+
+export const getOnlySeasonData = async ({
+  id,
+  cookie,
+}: {
+  id: string;
+  cookie: cookieType | "no need!";
+}) => {
+  try {
+    const options = {
+      method: "GET",
+      headers: {
+        cookie:
+          cookie === "no need!"
+            ? ""
+            : `t_hash_t=${cookie.t_hash_t};t_hash=${cookie.t_hash}`,
+        Referer: `${mainUrl}/`,
+      },
+    }
+    const response = await fetch(
+      `${mainUrl}/post.php?id=${id}&t=${Math.floor(Date.now() / 1000)}`,
+      options
+    ).then((res) => res.json());
+    return {
+      id: id,
+      title: response.title,
+      type: response.type,
+      season: response.season,
+    }
+  } catch (error) {
+    return null;
+  }
+}
+
+export const getEpisodeData = () => {
+  // ToDO
+return 'TODO'
 }

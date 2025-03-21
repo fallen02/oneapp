@@ -2,7 +2,6 @@ import { useState } from "react";
 import { View, RefreshControl, Image, FlatList } from "react-native";
 import { cookieStore } from "~/store/cookie";
 import { useEffect } from "react";
-import { useNFM } from "~/providers/nfm/useNFM";
 import { MotiView } from "moti";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { HomeRowComponents } from "~/components/HomeRowComponent";
@@ -10,10 +9,14 @@ import { NotificationBing } from "~/lib/icons/NotificationBing";
 import { Search } from "~/lib/icons/Search";
 import logo from "~/assets/images/logo.png";
 import { SkeletonHome } from "~/components/SkeletonHome";
+import { bypassUrl, fianalMainPageContentTyps } from "~/providers/nfm/handlers";
+import { fetchHomeData } from "~/helper/nfm/functions";
 
 export default function Screen() {
+  const [data, setData] = useState<fianalMainPageContentTyps[]>([]);
+  const [dataLoading, setDataLoading] = useState(false);
   const { cookie, setCookie } = cookieStore();
-    // const { data: mainPageData,  refetch } = useNFM();
+  // const { data: mainPageData,  refetch } = useNFM();
 
   const mainPageData = [
     {
@@ -3448,24 +3451,37 @@ export default function Screen() {
     },
   ];
   const [refresing, setRefresing] = useState<boolean>(false);
-  // useEffect(() => {
-  //   setCookie();
-  //   refetch()
-  // }, [cookie]);
+
+  const getHomePage = async () => {
+    try {
+      const newCookie = await bypassUrl();
+      if (newCookie) setCookie(newCookie);
+      if (!cookie) return;
+      const PageData = await fetchHomeData(cookie);
+      if (!PageData) return;
+      const tmp = PageData.shift();
+      setData(PageData);
+    } catch (error) {
+      return error;
+    }
+  };
+  useEffect(() => {
+    getHomePage()
+  }, []);
 
   const handleRefresh = async () => {
     setRefresing(true);
-    // await refetch();
+    if (cookie) await fetchHomeData(cookie);
     setRefresing(false);
   };
 
-  const Temp = mainPageData.shift()
+  const Temp = mainPageData.shift();
 
   return (
     <SafeAreaView>
       <MotiView className="p-2">
         <FlatList
-          data={mainPageData}
+          data={data}
           keyExtractor={({ heading }) => heading}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (

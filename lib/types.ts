@@ -1,3 +1,33 @@
+export interface PageDataType {
+  id: string | undefined;
+  poster: string | undefined;
+}
+export interface showTypes {
+  heading: string | undefined;
+  data: PageDataType[];
+}
+export interface PartialcontentDetails {
+  title: string;
+  year: string;
+  ua: string;
+  duration: string;
+  quality: string;
+  type: string;
+}
+
+export interface finalMainPageContentDataTypes {
+  id: string;
+  title: string;
+  poster: string;
+  year: string;
+  ua: string;
+  duration: string;
+  quality: string;
+  type: string;
+}
+
+
+
 interface Language {
     l: string;  // Language name (e.g., "English")
     s: string;  // Language code (e.g., "eng")
@@ -58,4 +88,15 @@ interface Language {
     ua: string;                  // Content rating (e.g., "U/A 16+")
     writer: string;              // Writers (comma-separated)
     year: string;                // Release year
+  }
+
+  export interface ShowSeasonType{
+    id: string,
+    title: string,
+    type: string,
+    season: Season[],
+  }
+
+  export interface SeasonEpisodeType{
+    episode: Episode[]
   }
